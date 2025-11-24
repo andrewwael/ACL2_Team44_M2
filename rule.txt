@@ -1,0 +1,21 @@
+Exceeds Expectations Rule
+
+This rule evaluates whether hotels meet or exceed the expectations of Solo Female travellers in each age_group.
+
+For each hotel h, compute the hotel’s base quality score:
+    base_sum(h) = cleanliness_base(h) + comfort_base(h) + facilities_base(h)
+
+For each age_group g, consider only Solo Female travellers from that age group.
+Compute the average review score for those travellers:
+    avg_review_sum(h,g) = AVG(score_cleanliness + score_comfort + score_facilities)
+
+A hotel exceeds expectations for demographic group g if:
+    base_sum(h) ≥ avg_review_sum(h,g)
+
+For every hotel that exceeds expectations, compute the improvement percentage:
+    improve%(h,g) = ((base_sum(h) - avg_review_sum(h,g)) / avg_review_sum(h,g)) * 100
+
+For each age_group, return the following statistics across all hotels that exceed expectations:
+    - Minimum improvement percentage
+    - Maximum improvement percentage
+    - Average improvement percentage
