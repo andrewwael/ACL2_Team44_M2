@@ -1,4 +1,4 @@
-1. Retrieve the count of travellers who have visited a country where they don't need a visa.
+//1. Query 1
 MATCH (t:Traveller)-[:FROM_COUNTRY]->(home:Country)
 MATCH (t)-[:STAYED_AT]->(:Hotel)-[:LOCATED_IN]->(:City)-[:LOCATED_IN]->(dest:Country)
 OPTIONAL MATCH (home)-[v:NEEDS_VISA]->(dest)
@@ -6,21 +6,21 @@ WITH t, home, dest, v
 WHERE home = dest OR v IS NULL
 RETURN count(DISTINCT t) AS travellers_no_visa;
 
-2. Top 3 hotels with highest average score_overall for Business travellers.
+//2. Query 2
 MATCH (t:Traveller {type:'Business'})-[:WROTE]->(r:Review)-[:REVIEWED]->(h:Hotel)
 WITH h, avg(r.score_overall) AS avg_rating
 RETURN h.name AS hotel_name, avg_rating
 ORDER BY avg_rating DESC
 LIMIT 3;
 
-3. Number of Couple travellers who stayed at each hotel (include hotels with 0), sorted by hotel name.
+//3. Query 3
 MATCH (h:Hotel)
 OPTIONAL MATCH (t:Traveller {type:'Couple'})-[:STAYED_AT]->(h)
 WITH h, count(DISTINCT t) AS couple_count
 RETURN h.name AS hotel_name, couple_count
 ORDER BY hotel_name;
 
-4. Top 3 hotels with average cleanliness below 8.8 (ascending).
+//4. Query 4
 MATCH (r:Review)-[:REVIEWED]->(h:Hotel)
 WITH h, avg(r.score_cleanliness) AS avg_cleanliness
 WHERE avg_cleanliness < 8.8
@@ -28,7 +28,7 @@ RETURN h.name AS hotel_name, avg_cleanliness
 ORDER BY avg_cleanliness ASC
 LIMIT 3;
 
-5. Hotels with highest average score_location for women (ties included).
+//5. Query 5
 MATCH (t:Traveller {gender:'Female'})-[:WROTE]->(r:Review)-[:REVIEWED]->(h:Hotel)
 WITH h, avg(r.score_location) AS avg_loc
 WITH collect({hotel:h.name, avg_loc:avg_loc}) AS rows, max(avg_loc) AS max_loc

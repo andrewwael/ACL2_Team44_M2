@@ -1,6 +1,3 @@
-Exceeds Expectations statistics by age_group for Solo Female travellers.
-
-
 MATCH (t:Traveller {type:'Solo', gender:'Female'})-[:WROTE]->(r:Review)-[:REVIEWED]->(h:Hotel)
 WITH t.age AS age_group, h,
      (h.cleanliness_base + h.comfort_base + h.facilities_base) AS base_sum,
