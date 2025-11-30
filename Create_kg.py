@@ -1,10 +1,6 @@
-# Create_kg.py
 import pandas as pd
 from neo4j import GraphDatabase
 
-# ---------------------------
-# Helpers
-# ---------------------------
 def read_config(path="config.txt"):
     cfg = {}
     with open(path, "r") as f:
@@ -21,9 +17,7 @@ def to_bool(x):
     s = str(x).strip().lower()
     return s in ["yes", "true", "1", "y"]
 
-# ---------------------------
-# Neo4j write functions
-# ---------------------------
+# Neo4j 
 def create_constraints(tx):
     tx.run("CREATE CONSTRAINT IF NOT EXISTS FOR (t:Traveller) REQUIRE t.user_id IS UNIQUE")
     tx.run("CREATE CONSTRAINT IF NOT EXISTS FOR (h:Hotel) REQUIRE h.hotel_id IS UNIQUE")
@@ -165,9 +159,8 @@ def load_visa_edges(tx, visa_df):
     )
     """, rows=visa_df.to_dict("records"))
 
-# ---------------------------
+
 # Main
-# ---------------------------
 def main():
     uri, user, pwd = read_config()
 

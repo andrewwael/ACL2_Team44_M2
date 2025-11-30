@@ -1,21 +1,15 @@
-Exceeds Expectations Rule
+Exceeds Expectations statistics by age_group for Solo Female travellers.
 
-This rule evaluates whether hotels meet or exceed the expectations of Solo Female travellers in each age_group.
 
-For each hotel h, compute the hotel’s base quality score:
-    base_sum(h) = cleanliness_base(h) + comfort_base(h) + facilities_base(h)
-
-For each age_group g, consider only Solo Female travellers from that age group.
-Compute the average review score for those travellers:
-    avg_review_sum(h,g) = AVG(score_cleanliness + score_comfort + score_facilities)
-
-A hotel exceeds expectations for demographic group g if:
-    base_sum(h) ≥ avg_review_sum(h,g)
-
-For every hotel that exceeds expectations, compute the improvement percentage:
-    improve%(h,g) = ((base_sum(h) - avg_review_sum(h,g)) / avg_review_sum(h,g)) * 100
-
-For each age_group, return the following statistics across all hotels that exceed expectations:
-    - Minimum improvement percentage
-    - Maximum improvement percentage
-    - Average improvement percentage
+MATCH (t:Traveller {type:'Solo', gender:'Female'})-[:WROTE]->(r:Review)-[:REVIEWED]->(h:Hotel)
+WITH t.age AS age_group, h,
+     (h.cleanliness_base + h.comfort_base + h.facilities_base) AS base_sum,
+     avg(r.score_cleanliness + r.score_comfort + r.score_facilities) AS avg_review_sum
+WITH age_group, base_sum, avg_review_sum,
+     ((base_sum - avg_review_sum) / avg_review_sum) * 100 AS improve
+WHERE base_sum >= avg_review_sum
+RETURN age_group,
+       round(min(improve), 2) AS min_improvement_pct,
+       round(max(improve), 2) AS max_improvement_pct,
+       round(avg(improve), 2) AS avg_improvement_pct
+ORDER BY age_group;
